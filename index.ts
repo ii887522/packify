@@ -2,7 +2,7 @@
 
 import { get } from 'https'
 import JSZip from 'jszip'
-import { mkdirSync, writeFile } from 'fs'
+import { mkdirSync, writeFile, rmdir, mkdir } from 'fs'
 
 export const options = {
     /**
@@ -17,6 +17,11 @@ export const options = {
  * Must Call Time(s): 1
  */
 export function dependencies(run: () => void) {
+    rmdir(options.outDirPath, { recursive: true }, _ => {
+        mkdir(options.outDirPath, err => {
+            if (err) throw err
+        })
+    })
     run()
 }
 
