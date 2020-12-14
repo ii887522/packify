@@ -1,1 +1,1 @@
-docker build -t custom-node:latest .
+docker build -t packify-custom-node:latest .
