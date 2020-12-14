@@ -7,13 +7,23 @@ export const options = {
     x86DllOutDirPaths: [''],
     x64DllOutDirPaths: ['']
 };
-export function dependencies(run) {
-    rmdir(options.outDirPath, { recursive: true }, _err => {
-        mkdir(options.outDirPath, err => {
+function emptyDir(dirPath) {
+    rmdir(dirPath, { recursive: true }, _err => {
+        mkdir(dirPath, err => {
             if (err)
                 throw err;
         });
     });
+}
+function emptyDirs() {
+    emptyDir(options.outDirPath);
+    for (const path of options.x86DllOutDirPaths)
+        emptyDir(path);
+    for (const path of options.x64DllOutDirPaths)
+        emptyDir(path);
+}
+export function dependencies(run) {
+    emptyDirs();
     run();
 }
 export function zip(url) {

@@ -22,16 +22,32 @@ export const options = {
 }
 
 /**
+ * @param dirPath it must ends with /
+ */
+function emptyDir(dirPath: string) {
+    rmdir(dirPath, { recursive: true }, _err => {
+        mkdir(dirPath, err => {
+            if (err) throw err
+        })
+    })
+}
+
+/**
+ * Must Call Time(s): 1
+ */
+function emptyDirs() {
+    emptyDir(options.outDirPath)
+    for (const path of options.x86DllOutDirPaths) emptyDir(path)
+    for (const path of options.x64DllOutDirPaths) emptyDir(path)
+}
+
+/**
  * @param run it must only contain function calls with file extension function name and promise related functions
  *
  * Must Call Time(s): 1
  */
 export function dependencies(run: () => void) {
-    rmdir(options.outDirPath, { recursive: true }, _err => {
-        mkdir(options.outDirPath, err => {
-            if (err) throw err
-        })
-    })
+    emptyDirs()
     run()
 }
 
