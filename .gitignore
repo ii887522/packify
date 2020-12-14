@@ -1,2 +1,7 @@
 node_modules
+libs
 *.tsbuildinfo
+Debug
+Release
+test/Test
+x64
