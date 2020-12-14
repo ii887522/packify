@@ -49,7 +49,7 @@ deploy
 ```js
 'use strict'
 
-import { options, dependencies, zip, dll } from '../index.js'
+import { options, dependencies, zip, dll } from '@ii887522/packify'
 
 options.outDirPath = 'test/libs/'
 options.x86DllOutDirPaths = ['test/Debug/', 'test/Release/', 'test/Test/'],
