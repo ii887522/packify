@@ -26,9 +26,9 @@ export function dependencies(run) {
     emptyDirs();
     run();
 }
-export function zip(url) {
+export function zip(url, headers) {
     return new Promise((resolve, reject) => {
-        get(url, res => {
+        get(url, { headers }, res => {
             const file = new Uint8Array(Number(res.headers['content-length']));
             let fileSize = 0;
             res.on('data', chunk => {

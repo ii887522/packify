@@ -23,7 +23,7 @@
   },
   "homepage": "https://gitlab.com/ii887522/packify#readme",
   "devDependencies": {
-    "@types/node": "^14.14.13"
+    "@types/node": "^14.14.14"
   },
   "dependencies": {
     "jszip": "^3.5.0"
