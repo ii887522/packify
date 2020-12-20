@@ -3,6 +3,7 @@
 import { get } from 'https'
 import JSZip from 'jszip'
 import { mkdirSync, writeFile, rmdir, mkdir, copyFile } from 'fs'
+import { OutgoingHttpHeaders } from 'http'
 
 export const options = {
     /**
@@ -55,9 +56,9 @@ export function dependencies(run: () => void) {
  * zip is a file extension name. It must only be called in a function that is passed to dependencies function.
  * @param url it must starts with https://
  */
-export function zip(url: string): Promise<void> {
+export function zip(url: string, headers: OutgoingHttpHeaders): Promise<void> {
     return new Promise((resolve, reject) => {
-        get(url, res => {
+        get(url, { headers }, res => {
             const file = new Uint8Array(Number(res.headers['content-length']));
             let fileSize = 0
             res.on('data', chunk => {
