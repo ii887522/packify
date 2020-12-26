@@ -2,6 +2,7 @@
 It is a build tool to allow users to just simply specify their dependencies they need and it will automatically download, install and configure them properly.
 
 ## Table of Contents
+- [For developers reading this in GitHub](https://gitlab.com/ii887522/packify#for-developers-reading-this-in-github)
 - [Prerequisites](https://gitlab.com/ii887522/packify#prerequisites)
 - [Build custom-node docker image](https://gitlab.com/ii887522/packify#build-custom-node-docker-image)
 - [Install dependencies](https://gitlab.com/ii887522/packify#install-dependencies)
@@ -9,6 +10,9 @@ It is a build tool to allow users to just simply specify their dependencies they
 - [Test project](https://gitlab.com/ii887522/packify#test-project)
 - [Deploy project](https://gitlab.com/ii887522/packify#deploy-project)
 - [Example Usage](https://gitlab.com/ii887522/packify#example-usage)
+
+## For developers reading this in GitHub
+Please go to https://gitlab.com/ii887522/packify to start contributing instead.
 
 ## Prerequisites
 - [Docker Desktop](https://www.docker.com/products/docker-desktop) using Linux containers
