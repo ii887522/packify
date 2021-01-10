@@ -7,16 +7,20 @@ export const options = {
     x86DllOutDirPaths: [''],
     x64DllOutDirPaths: ['']
 };
+let emptyDirPromise;
 function emptyDir(dirPath) {
-    rmdir(dirPath, { recursive: true }, _err => {
-        mkdir(dirPath, err => {
-            if (err)
-                throw err;
+    return new Promise((resolve, reject) => {
+        rmdir(dirPath, { recursive: true }, _err => {
+            mkdir(dirPath, err => {
+                if (err)
+                    reject(err);
+                resolve();
+            });
         });
     });
 }
 function emptyDirs() {
-    emptyDir(options.outDirPath);
+    emptyDirPromise = emptyDir(options.outDirPath);
     for (const path of options.x86DllOutDirPaths)
         emptyDir(path);
     for (const path of options.x64DllOutDirPaths)
@@ -40,6 +44,7 @@ export function zip(url, headers) {
                 jsZip.forEach((_relativePath, _file) => {
                     ++pendingEntryCount;
                 });
+                await emptyDirPromise;
                 jsZip.forEach((relativePath, file) => {
                     if (file.dir) {
                         mkdirSync(`${options.outDirPath}${relativePath}`);
