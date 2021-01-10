@@ -22,30 +22,34 @@ export const options = {
     x64DllOutDirPaths: ['']
 }
 
+let emptyDirPromise: Promise<void>
+
 /**
  * @param dirPath it must ends with /
  */
-function emptyDir(dirPath: string) {
-    rmdir(dirPath, { recursive: true }, _err => {
-        mkdir(dirPath, err => {
-            if (err) throw err
+function emptyDir(dirPath: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+        rmdir(dirPath, { recursive: true }, _err => {
+            mkdir(dirPath, err => {
+                if (err) reject(err)
+                resolve()
+            })
         })
     })
 }
 
 /**
- * Must Call Time(s): 1
+ * It must only be called 1 time in dependencies function
  */
 function emptyDirs() {
-    emptyDir(options.outDirPath)
+    emptyDirPromise = emptyDir(options.outDirPath)
     for (const path of options.x86DllOutDirPaths) emptyDir(path)
     for (const path of options.x64DllOutDirPaths) emptyDir(path)
 }
 
 /**
+ * It must only be called 1 time in build script.
  * @param run it must only contain function calls with file extension function name and promise related functions
- *
- * Must Call Time(s): 1
  */
 export function dependencies(run: () => void) {
     emptyDirs()
@@ -70,6 +74,7 @@ export function zip(url: string, headers: OutgoingHttpHeaders): Promise<void> {
                 jsZip.forEach((_relativePath, _file) => {
                     ++pendingEntryCount
                 })
+                await emptyDirPromise
                 jsZip.forEach((relativePath, file) => {
                     if (file.dir) {
                         mkdirSync(`${options.outDirPath}${relativePath}`)

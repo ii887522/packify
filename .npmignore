@@ -5,3 +5,5 @@ test
 *.cmd
 *.sh
 tsconfig.*
+CODE_OF_CONDUCT.md
+.github
