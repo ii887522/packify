@@ -1,1 +1,1 @@
-docker run --rm --name packify_tester -w /packify -v $PWD:/packify node:15.4.0-alpine3.10 npm test
+docker run --rm --name packify_tester -w /packify -v $PWD:/packify packify-custom-node ncu -u && npm install && npx tsc && npm test
