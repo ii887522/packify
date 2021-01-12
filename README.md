@@ -5,6 +5,7 @@ It is a build tool to allow users to just simply specify their dependencies they
 
 ## Table of Contents
 - [For developers reading this in GitHub](https://gitlab.com/ii887522/packify#for-developers-reading-this-in-github)
+- [Coding Style](https://gitlab.com/ii887522/packify#coding-style)
 - [Prerequisites](https://gitlab.com/ii887522/packify#prerequisites)
 - [Build custom-node docker image](https://gitlab.com/ii887522/packify#build-custom-node-docker-image)
 - [Install dependencies, build and test project](https://gitlab.com/ii887522/packify#install-dependencies-build-and-test-project)
@@ -13,6 +14,12 @@ It is a build tool to allow users to just simply specify their dependencies they
 
 ## For developers reading this in GitHub
 Please go to https://gitlab.com/ii887522/packify to start contributing instead.
+
+## Coding Style
+This project follows [Javascript Standard Style](https://standardjs.com/). Please familiarize yourself with the rules provided in the coding style and 
+make sure all the proposed code changes in your commits are conforming to the style before making a merge request. You can also make use of
+StandardJS - Javascript Standard Style which is a [Visual Studio Code](https://code.visualstudio.com/) plugin and `test` command under the
+[Install dependencies, build and test project](https://gitlab.com/ii887522/packify#install-dependencies-build-and-test-project) section to support you.
 
 ## Prerequisites
 - [Docker Desktop](https://www.docker.com/products/docker-desktop) using Linux containers
