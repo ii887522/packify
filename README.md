@@ -16,7 +16,7 @@ It is a build tool to allow users to just simply specify their dependencies they
 Please go to https://gitlab.com/ii887522/packify to start contributing instead.
 
 ## Coding Style
-This project follows [Javascript Standard Style](https://standardjs.com/). Please familiarize yourself with the rules provided in the coding style and 
+This project follows [Javascript Standard Style](https://standardjs.com/). Please familiarize yourself with the rules provided in the coding style and
 make sure all the proposed code changes in your commits are conforming to the style before making a merge request. You can also make use of
 StandardJS - Javascript Standard Style which is a [Visual Studio Code](https://code.visualstudio.com/) plugin and `test` command under the
 [Install dependencies, build and test project](https://gitlab.com/ii887522/packify#install-dependencies-build-and-test-project) section to support you.
@@ -32,21 +32,47 @@ StandardJS - Javascript Standard Style which is a [Visual Studio Code](https://c
   - YAML
 
 ## Build custom-node docker image
+
+### For Windows:
 ```sh
 cd custom-node
 build
 cd ..
 ```
 
+### For Linux:
+```sh
+cd custom-node
+sh build.sh
+cd ..
+```
+<br />
+
 ## Install dependencies, build and test project
+
+### For Windows:
 ```sh
 test
 ```
 
+### For Linux:
+```sh
+sh test.sh
+```
+<br />
+
 ## Deploy project
+
+### For Windows:
 ```sh
 deploy
 ```
+
+### For Linux:
+```sh
+sh deploy.sh
+```
+<br />
 
 ## Example Usage
 ```js
@@ -67,7 +93,7 @@ dependencies(async () => {
     zip('https://gitlab.com/api/v4/projects/23071534/packages/generic/utfcpp/3.1.2/utfcpp-3.1.2.zip', { 'PRIVATE-TOKEN': accessToken })
   ])
   dll('x86', 'SDL2-2.0.12/lib/x86/SDL2.dll')
-  dll('x64', 'SDL2-2.0.12/lib/X64/SDL2.dll')
+  dll('x64', 'SDL2-2.0.12/lib/x64/SDL2.dll')
   dll('x86', 'SDL2_image-2.0.5/lib/x86/libpng16-16.dll')
   dll('x86', 'SDL2_image-2.0.5/lib/x86/SDL2_image.dll')
   dll('x86', 'SDL2_image-2.0.5/lib/x86/zlib1.dll')
