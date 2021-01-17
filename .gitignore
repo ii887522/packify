@@ -4,4 +4,4 @@ libs
 Debug
 Release
 test/Test
-x64
+test/x64/Test
