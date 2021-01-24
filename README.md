@@ -34,7 +34,7 @@ dependencies(async () => {
     zip('https://gitlab.com/api/v4/projects/23071534/packages/generic/utfcpp/3.1.2/utfcpp-3.1.2.zip', { 'PRIVATE-TOKEN': accessToken })
   ])
   dll('x86', 'SDL2-2.0.12/lib/x86/SDL2.dll')
-  dll('x64', 'SDL2-2.0.12/lib/X64/SDL2.dll')
+  dll('x64', 'SDL2-2.0.12/lib/x64/SDL2.dll')
   dll('x86', 'SDL2_image-2.0.5/lib/x86/libpng16-16.dll')
   dll('x86', 'SDL2_image-2.0.5/lib/x86/SDL2_image.dll')
   dll('x86', 'SDL2_image-2.0.5/lib/x86/zlib1.dll')
