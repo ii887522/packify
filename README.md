@@ -5,74 +5,15 @@ It is a build tool to allow users to just simply specify their dependencies they
 
 ## Table of Contents
 - [For developers reading this in GitHub](https://gitlab.com/ii887522/packify#for-developers-reading-this-in-github)
-- [Coding Style](https://gitlab.com/ii887522/packify#coding-style)
-- [Prerequisites](https://gitlab.com/ii887522/packify#prerequisites)
-- [Build custom-node docker image](https://gitlab.com/ii887522/packify#build-custom-node-docker-image)
-- [Install dependencies, build and test project](https://gitlab.com/ii887522/packify#install-dependencies-build-and-test-project)
-- [Deploy project](https://gitlab.com/ii887522/packify#deploy-project)
+- [Contributing](https://gitlab.com/ii887522/packify#contributing)
 - [Example Usage](https://gitlab.com/ii887522/packify#example-usage)
+- [References](https://gitlab.com/ii887522/packify#references)
 
 ## For developers reading this in GitHub
 Please go to https://gitlab.com/ii887522/packify to start contributing instead.
 
-## Coding Style
-This project follows [Javascript Standard Style](https://standardjs.com/). Please familiarize yourself with the rules provided in the coding style and
-make sure all the proposed code changes in your commits are conforming to the style before making a merge request. You can also make use of
-StandardJS - Javascript Standard Style which is a [Visual Studio Code](https://code.visualstudio.com/) plugin and `test` command under the
-[Install dependencies, build and test project](https://gitlab.com/ii887522/packify#install-dependencies-build-and-test-project) section to support you.
-
-## Prerequisites
-- [Docker Desktop](https://www.docker.com/products/docker-desktop) using Linux containers
-- [Visual Studio Code](https://code.visualstudio.com/)
-  - Docker
-  - EditorConfig for VS Code
-  - Markdown All in One
-  - Remote - WSL
-  - StandardJS - Javascript Standard Style
-  - YAML
-
-## Build custom-node docker image
-
-### For Windows:
-```sh
-cd custom-node
-build
-cd ..
-```
-
-### For Linux:
-```sh
-cd custom-node
-sh build.sh
-cd ..
-```
-<br />
-
-## Install dependencies, build and test project
-
-### For Windows:
-```sh
-test
-```
-
-### For Linux:
-```sh
-sh test.sh
-```
-<br />
-
-## Deploy project
-
-### For Windows:
-```sh
-deploy
-```
-
-### For Linux:
-```sh
-sh deploy.sh
-```
-<br />
+## Contributing
+Please go to https://gitlab.com/ii887522/packify/-/blob/master/CONTRIBUTING.md to get some information about contributing to packify.
 
 ## Example Usage
 ```js
@@ -105,4 +46,84 @@ dependencies(async () => {
   dll('x64', 'SDL2_ttf-2.0.15/lib/x64/libfreetype-6.dll')
   dll('x64', 'SDL2_ttf-2.0.15/lib/x64/SDL2_ttf.dll')
 })
+```
+
+## References
+
+### **options**
+```ts
+const options: {
+  outDirPath: string
+  x86DllOutDirPaths: string[]
+  x64DllOutDirPaths: string[]
+}
+```
+`outDirPath`: It must be assigned to a valid directory path and ends with /
+
+`x86DllOutDirPaths`: It must be assigned to an array of valid directory paths and all ends with / if specifying some x86 dll dependencies
+
+`x64DllOutDirPaths`: It must be assigned to an array of valid directory paths and all ends with / if specifying some x64 dll dependencies
+#### **Example usage:**
+```ts
+options.outDirPath = 'test/libs/'
+options.x86DllOutDirPaths = ['test/Debug/', 'test/Release/', 'test/Test/']
+options.x64DllOutDirPaths = ['test/x64/Debug/', 'test/x64/Release/', 'test/x64/Test/']
+```
+<br />
+
+### **dependencies**
+```ts
+function dependencies (run: () => void): void
+```
+Dependencies inside a code block is passed as an argument to this function to ensure proper setup is happened.
+
+It must only be called 1 time in build script.
+
+`run`: it must only contain function calls with file extension function name and promise related functions
+#### **Example usage:**
+```ts
+dependencies(async () => {
+  await Promise.all([
+    zip('https://www.libsdl.org/release/SDL2-devel-2.0.12-VC.zip'),
+    zip('https://www.libsdl.org/projects/SDL_image/release/SDL2_image-devel-2.0.5-VC.zip'),
+    zip('https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-2.0.15-VC.zip'),
+    zip('https://gitlab.com/api/v4/projects/23071534/packages/generic/utfcpp/3.1.2/utfcpp-3.1.2.zip', { 'PRIVATE-TOKEN': accessToken })
+  ])
+  dll('x86', 'SDL2-2.0.12/lib/x86/SDL2.dll')
+  dll('x64', 'SDL2-2.0.12/lib/X64/SDL2.dll')
+  dll('x86', 'SDL2_image-2.0.5/lib/x86/libpng16-16.dll')
+  dll('x86', 'SDL2_image-2.0.5/lib/x86/SDL2_image.dll')
+  dll('x86', 'SDL2_image-2.0.5/lib/x86/zlib1.dll')
+  dll('x64', 'SDL2_image-2.0.5/lib/x64/libpng16-16.dll')
+  dll('x64', 'SDL2_image-2.0.5/lib/x64/SDL2_image.dll')
+  dll('x64', 'SDL2_image-2.0.5/lib/x64/zlib1.dll')
+  dll('x86', 'SDL2_ttf-2.0.15/lib/x86/libfreetype-6.dll')
+  dll('x86', 'SDL2_ttf-2.0.15/lib/x86/SDL2_ttf.dll')
+  dll('x64', 'SDL2_ttf-2.0.15/lib/x64/libfreetype-6.dll')
+  dll('x64', 'SDL2_ttf-2.0.15/lib/x64/SDL2_ttf.dll')
+})
+```
+<br />
+
+### **zip**
+```ts
+async function zip (url: string, headers: OutgoingHttpHeaders): Promise<void>
+```
+zip is a file extension name. It must only be called in a function that is passed to dependencies function.
+
+`url`: it must starts with https://
+#### **Example usage:**
+```ts
+zip('https://www.libsdl.org/release/SDL2-devel-2.0.12-VC.zip')
+```
+<br />
+
+### **dll**
+```ts
+function dll (platform: 'x86' | 'x64', path: string): void
+```
+dll is a file extension name. It must only be called in a function that is passed to dependencies function.
+#### **Example usage:**
+```ts
+dll('x86', 'SDL2-2.0.12/lib/x86/SDL2.dll')
 ```
