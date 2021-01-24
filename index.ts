@@ -35,6 +35,8 @@ function emptyDirs (): void {
 }
 
 /**
+ * Dependencies inside a code block is passed as an argument to this function to ensure proper setup is happened.
+ *
  * It must only be called 1 time in build script.
  * @param run it must only contain function calls with file extension function name and promise related functions
  */
