@@ -22,18 +22,43 @@ StandardJS - Javascript Standard Style which is a [Visual Studio Code](https://c
   - YAML
 
 ## Build custom-node docker image
+
+### For Windows:
 ```sh
 cd custom-node
 build
 cd ..
 ```
 
+### For Linux:
+```sh
+cd custom-node
+sh build.sh
+cd ..
+```
+<br />
+
 ## Install dependencies, build and test project
+
+### For Windows:
 ```sh
 test
 ```
 
+### For Linux:
+``` sh
+sh test.sh
+```
+<br />
+
 ## Deploy project
+
+### For Windows:
 ```sh
 deploy
+```
+
+### For Linux:
+```sh
+sh deploy.sh
 ```
