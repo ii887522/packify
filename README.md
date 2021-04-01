@@ -19,7 +19,7 @@ Please go to https://gitlab.com/ii887522/packify/-/blob/master/CONTRIBUTING.md t
 ```js
 'use strict'
 
-import { options, dependencies, zip, dll } from '../index.js'
+import { options, dependencies, zip, file, dll } from '../index.js'
 
 options.outDirPath = 'test/libs/'
 options.x86DllOutDirPaths = ['test/Debug/', 'test/Release/', 'test/Test/']
@@ -32,6 +32,7 @@ dependencies(async () => {
     zip('https://www.libsdl.org/release/SDL2-devel-2.0.12-VC.zip'),
     zip('https://www.libsdl.org/projects/SDL_image/release/SDL2_image-devel-2.0.5-VC.zip'),
     zip('https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-2.0.15-VC.zip'),
+    file('https://raw.githubusercontent.com/nothings/stb/master/stb_image.h'),
     zip('https://gitlab.com/api/v4/projects/23071534/packages/generic/utfcpp/3.1.2/utfcpp-3.1.2.zip', { 'PRIVATE-TOKEN': accessToken })
   ])
   dll('x86', 'SDL2-2.0.12/lib/x86/SDL2.dll')
@@ -89,6 +90,7 @@ dependencies(async () => {
     zip('https://www.libsdl.org/release/SDL2-devel-2.0.12-VC.zip'),
     zip('https://www.libsdl.org/projects/SDL_image/release/SDL2_image-devel-2.0.5-VC.zip'),
     zip('https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-2.0.15-VC.zip'),
+    file('https://raw.githubusercontent.com/nothings/stb/master/stb_image.h'),
     zip('https://gitlab.com/api/v4/projects/23071534/packages/generic/utfcpp/3.1.2/utfcpp-3.1.2.zip', { 'PRIVATE-TOKEN': accessToken })
   ])
   dll('x86', 'SDL2-2.0.12/lib/x86/SDL2.dll')
@@ -117,6 +119,19 @@ zip is a file extension name. It must only be called in a function that is passe
 #### **Example usage:**
 ```ts
 zip('https://www.libsdl.org/release/SDL2-devel-2.0.12-VC.zip')
+```
+<br />
+
+### **file**
+```ts
+async function file (url: string, headers?: OutgoingHttpHeaders): Promise<void>
+```
+file is just a single file. It must only be called in a function that is passed to dependencies function.
+
+`url`: it must starts with https://
+#### **Example usage:**
+```ts
+file('https://raw.githubusercontent.com/nothings/stb/master/stb_image.h')
 ```
 <br />
 
