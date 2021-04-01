@@ -71,6 +71,40 @@ export async function zip(url, headers) {
         }).on('error', _err => reject);
     });
 }
+export async function file(url, headers) {
+    return await new Promise((resolve, reject) => {
+        get(url, { headers }, res => {
+            if (res.headers['content-type']?.startsWith('text/html') === true) {
+                let fileContent = '';
+                res.on('data', chunk => {
+                    fileContent += chunk;
+                }).on('end', () => {
+                    consume((async () => {
+                        await file(decode(substring(fileContent, 'http', '"')));
+                        resolve();
+                    })());
+                }).on('error', _err => reject);
+            }
+            else {
+                const fileContent = new Uint8Array(Number(res.headers['content-length']));
+                let fileSize = 0;
+                res.on('data', chunk => {
+                    fileContent.set(chunk, fileSize);
+                    fileSize += chunk.length;
+                }).on('end', () => {
+                    consume((async () => {
+                        await emptyDirPromise;
+                        writeFile(`${options.outDirPath}${getFileName(url)}`, fileContent, err => {
+                            if (err !== null)
+                                reject(err);
+                            resolve();
+                        });
+                    })());
+                }).on('error', _err => reject);
+            }
+        }).on('error', _err => reject);
+    });
+}
 export function dll(platform, path) {
     let dllOutDirPaths;
     switch (platform) {

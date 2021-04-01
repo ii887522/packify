@@ -98,6 +98,43 @@ export async function zip (url: string, headers?: OutgoingHttpHeaders): Promise<
 }
 
 /**
+ * file is just a single file. It must only be called in a function that is passed to dependencies function.
+ * @param url it must starts with https://
+ */
+export async function file (url: string, headers?: OutgoingHttpHeaders): Promise<void> {
+  return await new Promise((resolve, reject) => {
+    get(url, { headers }, res => {
+      if (res.headers['content-type']?.startsWith('text/html') === true) {
+        let fileContent = ''
+        res.on('data', chunk => {
+          fileContent += chunk as string
+        }).on('end', () => {
+          consume((async () => {
+            await file(decode(substring(fileContent, 'http', '"')))
+            resolve()
+          })())
+        }).on('error', _err => reject)
+      } else {
+        const fileContent = new Uint8Array(Number(res.headers['content-length']))
+        let fileSize = 0
+        res.on('data', chunk => {
+          fileContent.set(chunk, fileSize)
+          fileSize += chunk.length as number
+        }).on('end', () => {
+          consume((async () => {
+            await emptyDirPromise
+            writeFile(`${options.outDirPath}${getFileName(url)}`, fileContent, err => {
+              if (err !== null) reject(err)
+              resolve()
+            })
+          })())
+        }).on('error', _err => reject)
+      }
+    }).on('error', _err => reject)
+  })
+}
+
+/**
  * dll is a file extension name. It must only be called in a function that is passed to dependencies function.
  */
 export function dll (platform: 'x86' | 'x64', path: string): void {
