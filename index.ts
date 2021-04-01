@@ -4,7 +4,8 @@ import { get } from 'https'
 import JSZip from 'jszip'
 import { mkdirSync, writeFile, copyFile } from 'fs'
 import { OutgoingHttpHeaders } from 'http'
-import { consume, emptyDir, getFileName } from '@ii887522/hydro'
+import { consume, emptyDir, getFileName, substring } from '@ii887522/hydro'
+import { decode } from 'html-entities'
 
 export const options = {
   /**
@@ -49,37 +50,49 @@ export function dependencies (run: () => void): void {
  * zip is a file extension name. It must only be called in a function that is passed to dependencies function.
  * @param url it must starts with https://
  */
-export async function zip (url: string, headers: OutgoingHttpHeaders): Promise<void> {
+export async function zip (url: string, headers?: OutgoingHttpHeaders): Promise<void> {
   return await new Promise((resolve, reject) => {
     get(url, { headers }, res => {
-      const file = new Uint8Array(Number(res.headers['content-length']))
-      let fileSize = 0
-      res.on('data', chunk => {
-        file.set(chunk, fileSize)
-        fileSize += chunk.length as number
-      }).on('end', () => {
-        consume((async () => {
-          const jsZip = await JSZip.loadAsync(file)
-          let pendingEntryCount = 0
-          jsZip.forEach((_relativePath, _file) => {
-            ++pendingEntryCount
-          })
-          await emptyDirPromise
-          jsZip.forEach((relativePath, file) => {
-            if (file.dir) {
-              mkdirSync(`${options.outDirPath}${relativePath}`)
-              --pendingEntryCount
-            } else {
-              consume((async () => {
-                writeFile(`${options.outDirPath}${relativePath}`, await file.async('uint8array'), err => {
-                  if (err !== null) reject(err)
-                  if (--pendingEntryCount === 0) resolve()
-                })
-              })())
-            }
-          })
-        })())
-      }).on('error', _err => reject)
+      if (res.headers['content-type']?.startsWith('text/html') === true) {
+        let file = ''
+        res.on('data', chunk => {
+          file += chunk as string
+        }).on('end', () => {
+          consume((async () => {
+            await zip(decode(substring(file, 'http', '"')))
+            resolve()
+          })())
+        }).on('error', _err => reject)
+      } else {
+        const file = new Uint8Array(Number(res.headers['content-length']))
+        let fileSize = 0
+        res.on('data', chunk => {
+          file.set(chunk, fileSize)
+          fileSize += chunk.length as number
+        }).on('end', () => {
+          consume((async () => {
+            const jsZip = await JSZip.loadAsync(file)
+            let pendingEntryCount = 0
+            jsZip.forEach((_relativePath, _file) => {
+              ++pendingEntryCount
+            })
+            await emptyDirPromise
+            jsZip.forEach((relativePath, file) => {
+              if (file.dir) {
+                mkdirSync(`${options.outDirPath}${relativePath}`)
+                --pendingEntryCount
+              } else {
+                consume((async () => {
+                  writeFile(`${options.outDirPath}${relativePath}`, await file.async('uint8array'), err => {
+                    if (err !== null) reject(err)
+                    if (--pendingEntryCount === 0) resolve()
+                  })
+                })())
+              }
+            })
+          })())
+        }).on('error', _err => reject)
+      }
     }).on('error', _err => reject)
   })
 }
