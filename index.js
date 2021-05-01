@@ -2,7 +2,7 @@
 import { get } from 'https';
 import JSZip from 'jszip';
 import { mkdirSync, writeFile, copyFile } from 'fs';
-import { consume, emptyDir, getFileName, substring } from '@ii887522/hydro';
+import { consume, emptyDir, getFileName, substring, DynamicUint8Array } from '@ii887522/hydro';
 import { decode } from 'html-entities';
 export const options = {
     outDirPath: '',
@@ -35,7 +35,7 @@ export async function zip(url, headers) {
                     })());
                 }).on('error', _err => reject);
             }
-            else {
+            else if (res.headers['content-length'] !== undefined) {
                 const file = new Uint8Array(Number(res.headers['content-length']));
                 let fileSize = 0;
                 res.on('data', chunk => {
@@ -44,6 +44,37 @@ export async function zip(url, headers) {
                 }).on('end', () => {
                     consume((async () => {
                         const jsZip = await JSZip.loadAsync(file);
+                        let pendingEntryCount = 0;
+                        jsZip.forEach((_relativePath, _file) => {
+                            ++pendingEntryCount;
+                        });
+                        await emptyDirPromise;
+                        jsZip.forEach((relativePath, file) => {
+                            if (file.dir) {
+                                mkdirSync(`${options.outDirPath}${relativePath}`);
+                                --pendingEntryCount;
+                            }
+                            else {
+                                consume((async () => {
+                                    writeFile(`${options.outDirPath}${relativePath}`, await file.async('uint8array'), err => {
+                                        if (err !== null)
+                                            reject(err);
+                                        if (--pendingEntryCount === 0)
+                                            resolve();
+                                    });
+                                })());
+                            }
+                        });
+                    })());
+                }).on('error', _err => reject);
+            }
+            else {
+                const file = new DynamicUint8Array();
+                res.on('data', chunk => {
+                    file.add(chunk);
+                }).on('end', () => {
+                    consume((async () => {
+                        const jsZip = await JSZip.loadAsync(file.get());
                         let pendingEntryCount = 0;
                         jsZip.forEach((_relativePath, _file) => {
                             ++pendingEntryCount;
@@ -85,7 +116,7 @@ export async function file(url, headers) {
                     })());
                 }).on('error', _err => reject);
             }
-            else {
+            else if (res.headers['content-length'] !== undefined) {
                 const fileContent = new Uint8Array(Number(res.headers['content-length']));
                 let fileSize = 0;
                 res.on('data', chunk => {
@@ -95,6 +126,21 @@ export async function file(url, headers) {
                     consume((async () => {
                         await emptyDirPromise;
                         writeFile(`${options.outDirPath}${getFileName(url)}`, fileContent, err => {
+                            if (err !== null)
+                                reject(err);
+                            resolve();
+                        });
+                    })());
+                }).on('error', _err => reject);
+            }
+            else {
+                const fileContent = new DynamicUint8Array();
+                res.on('data', chunk => {
+                    fileContent.add(chunk);
+                }).on('end', () => {
+                    consume((async () => {
+                        await emptyDirPromise;
+                        writeFile(`${options.outDirPath}${getFileName(url)}`, fileContent.get(), err => {
                             if (err !== null)
                                 reject(err);
                             resolve();
