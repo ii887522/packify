@@ -5,7 +5,6 @@ import { options, dependencies, zip, file, dll } from '../index.js'
 options.outDirPath = 'test/libs/'
 options.x86DllOutDirPaths = ['test/Debug/', 'test/Release/', 'test/Test/']
 options.x64DllOutDirPaths = ['test/x64/Debug/', 'test/x64/Release/', 'test/x64/Test/']
-const accessToken = '<access-token>'
 
 dependencies(async () => {
   await Promise.all([
@@ -14,8 +13,7 @@ dependencies(async () => {
     zip('https://www.libsdl.org/projects/SDL_image/release/SDL2_image-devel-2.0.5-VC.zip'),
     zip('https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-2.0.15-VC.zip'),
     file('https://raw.githubusercontent.com/nothings/stb/master/stb_image.h'),
-    zip('https://github.com/ubawurinna/freetype-windows-binaries/archive/refs/tags/v2.10.4.zip'),
-    zip('https://gitlab.com/api/v4/projects/23071534/packages/generic/utfcpp/3.1.2/utfcpp-3.1.2.zip', { 'PRIVATE-TOKEN': accessToken })
+    zip('https://github.com/ubawurinna/freetype-windows-binaries/archive/refs/tags/v2.10.4.zip')
   ])
   dll('x86', 'SDL2-2.0.12/lib/x86/SDL2.dll')
   dll('x64', 'SDL2-2.0.12/lib/x64/SDL2.dll')

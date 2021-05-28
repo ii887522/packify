@@ -9,7 +9,7 @@
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://gitlab.com/ii887522/packify.git"
+    "url": "git+https://github.com/ii887522/packify.git"
   },
   "keywords": [
     "pack",
@@ -19,9 +19,9 @@
   "author": "ii887522",
   "license": "MIT",
   "bugs": {
-    "url": "https://gitlab.com/ii887522/packify/issues"
+    "url": "https://github.com/ii887522/packify/issues"
   },
-  "homepage": "https://gitlab.com/ii887522/packify#readme",
+  "homepage": "https://github.com/ii887522/packify",
   "ts-standard": {
     "ignore": [
       "test/index.test.js",
@@ -29,7 +29,7 @@
     ]
   },
   "devDependencies": {
-    "@types/node": "^15.0.1",
+    "@types/node": "^15.6.1",
     "ts-standard": "^10.0.0"
   },
   "dependencies": {
