@@ -79,7 +79,7 @@ export async function zip (url: string, headers?: OutgoingHttpHeaders): Promise<
             await emptyDirPromise
             jsZip.forEach((relativePath, file) => {
               if (file.dir) {
-                mkdirSync(`${options.outDirPath}${relativePath}`)
+                mkdirSync(`${options.outDirPath}${relativePath}`, { recursive: true })
                 --pendingEntryCount
               } else {
                 consume((async () => {
@@ -106,7 +106,7 @@ export async function zip (url: string, headers?: OutgoingHttpHeaders): Promise<
             await emptyDirPromise
             jsZip.forEach((relativePath, file) => {
               if (file.dir) {
-                mkdirSync(`${options.outDirPath}${relativePath}`)
+                mkdirSync(`${options.outDirPath}${relativePath}`, { recursive: true })
                 --pendingEntryCount
               } else {
                 consume((async () => {

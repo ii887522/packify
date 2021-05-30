@@ -33,7 +33,7 @@
     "ts-standard": "^10.0.0"
   },
   "dependencies": {
-    "@ii887522/hydro": "^1.2.0",
+    "@ii887522/hydro": "^1.2.1",
     "html-entities": "^2.3.2",
     "jszip": "^3.6.0"
   }

@@ -51,7 +51,7 @@ export async function zip(url, headers) {
                         await emptyDirPromise;
                         jsZip.forEach((relativePath, file) => {
                             if (file.dir) {
-                                mkdirSync(`${options.outDirPath}${relativePath}`);
+                                mkdirSync(`${options.outDirPath}${relativePath}`, { recursive: true });
                                 --pendingEntryCount;
                             }
                             else {
@@ -82,7 +82,7 @@ export async function zip(url, headers) {
                         await emptyDirPromise;
                         jsZip.forEach((relativePath, file) => {
                             if (file.dir) {
-                                mkdirSync(`${options.outDirPath}${relativePath}`);
+                                mkdirSync(`${options.outDirPath}${relativePath}`, { recursive: true });
                                 --pendingEntryCount;
                             }
                             else {
