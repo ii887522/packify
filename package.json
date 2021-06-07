@@ -1,6 +1,6 @@
 {
   "name": "@ii887522/packify",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "description": "It is a build tool to allow users to just simply specify their dependencies they need and it will automatically download, install and configure them properly.",
   "main": "index.js",
   "scripts": {
