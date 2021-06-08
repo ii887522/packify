@@ -4,7 +4,7 @@ import { get } from 'https'
 import JSZip from 'jszip'
 import { mkdirSync, writeFile, copyFile } from 'fs'
 import { OutgoingHttpHeaders } from 'http'
-import { consume, emptyDir, getFileName, substring, DynamicUint8Array } from '@ii887522/hydro'
+import { consume, emptyDir, getFileName, substring, DynamicUint8Array, removeFiles } from '@ii887522/hydro'
 import { decode } from 'html-entities'
 
 export const options = {
@@ -29,10 +29,10 @@ let emptyDirPromise: Promise<void>
 /**
  * It must only be called 1 time in dependencies function
  */
-function emptyDirs (): void {
+function cleanDirs (): void {
   emptyDirPromise = emptyDir(options.outDirPath)
-  for (const path of options.x86DllOutDirPaths) consume(emptyDir(path))
-  for (const path of options.x64DllOutDirPaths) consume(emptyDir(path))
+  for (const path of options.x86DllOutDirPaths) consume(removeFiles('dll', path))
+  for (const path of options.x64DllOutDirPaths) consume(removeFiles('dll', path))
 }
 
 /**
@@ -42,7 +42,7 @@ function emptyDirs (): void {
  * @param run it must only contain function calls with file extension function name and promise related functions
  */
 export function dependencies (run: () => void): void {
-  emptyDirs()
+  cleanDirs()
   run()
 }
 
