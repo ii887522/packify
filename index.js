@@ -2,7 +2,7 @@
 import { get } from 'https';
 import JSZip from 'jszip';
 import { mkdirSync, writeFile, copyFile } from 'fs';
-import { consume, emptyDir, getFileName, substring, DynamicUint8Array } from '@ii887522/hydro';
+import { consume, emptyDir, getFileName, substring, DynamicUint8Array, removeFiles } from '@ii887522/hydro';
 import { decode } from 'html-entities';
 export const options = {
     outDirPath: '',
@@ -10,15 +10,15 @@ export const options = {
     x64DllOutDirPaths: ['']
 };
 let emptyDirPromise;
-function emptyDirs() {
+function cleanDirs() {
     emptyDirPromise = emptyDir(options.outDirPath);
     for (const path of options.x86DllOutDirPaths)
-        consume(emptyDir(path));
+        consume(removeFiles('dll', path));
     for (const path of options.x64DllOutDirPaths)
-        consume(emptyDir(path));
+        consume(removeFiles('dll', path));
 }
 export function dependencies(run) {
-    emptyDirs();
+    cleanDirs();
     run();
 }
 export async function zip(url, headers) {
