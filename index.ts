@@ -128,7 +128,7 @@ export async function zip (url: string, headers?: OutgoingHttpHeaders): Promise<
  * file is just a single file. It must only be called in a function that is passed to dependencies function.
  * @param url it must starts with https://
  */
-export async function file (url: string, headers?: OutgoingHttpHeaders): Promise<void> {
+export async function file (url: string, name?: string, headers?: OutgoingHttpHeaders): Promise<void> {
   return await new Promise((resolve, reject) => {
     get(url, { headers }, res => {
       if (res.headers['content-type']?.startsWith('text/html') === true) {
@@ -137,7 +137,7 @@ export async function file (url: string, headers?: OutgoingHttpHeaders): Promise
           fileContent += chunk as string
         }).on('end', () => {
           consume((async () => {
-            await file(decode(substring(fileContent, 'http', '"')))
+            await file(decode(substring(fileContent, 'http', '"')), getFileName(url))
             resolve()
           })())
         }).on('error', _err => reject)
@@ -150,7 +150,7 @@ export async function file (url: string, headers?: OutgoingHttpHeaders): Promise
         }).on('end', () => {
           consume((async () => {
             await emptyDirPromise
-            writeFile(`${options.outDirPath}${getFileName(url)}`, fileContent, err => {
+            writeFile(`${options.outDirPath}${name ?? getFileName(url)}`, fileContent, err => {
               if (err !== null) reject(err)
               resolve()
             })
@@ -163,7 +163,7 @@ export async function file (url: string, headers?: OutgoingHttpHeaders): Promise
         }).on('end', () => {
           consume((async () => {
             await emptyDirPromise
-            writeFile(`${options.outDirPath}${getFileName(url)}`, fileContent.get(), err => {
+            writeFile(`${options.outDirPath}${name ?? getFileName(url)}`, fileContent.get(), err => {
               if (err !== null) reject(err)
               resolve()
             })

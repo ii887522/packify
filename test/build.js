@@ -22,7 +22,8 @@ dependencies(async () => {
     zip(`https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-${sdl2TTFVersion}-VC.zip`),
     file('https://raw.githubusercontent.com/nothings/stb/master/stb_image.h'),
     zip('https://github.com/ubawurinna/freetype-windows-binaries/archive/refs/tags/v2.10.4.zip'),
-    zip(`https://github.com/ii887522/nitro/releases/download/v${nitroVersion}/nitro-${nitroVersion}.zip`)
+    zip(`https://github.com/ii887522/nitro/releases/download/v${nitroVersion}/nitro-${nitroVersion}.zip`),
+    file('https://github.com/catchorg/Catch2/releases/download/v2.13.6/catch.hpp')
   ])
   dll('x86', `SDL2-${sdl2Version}/lib/x86/SDL2.dll`)
   dll('x64', `SDL2-${sdl2Version}/lib/x64/SDL2.dll`)
