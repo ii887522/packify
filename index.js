@@ -102,7 +102,7 @@ export async function zip(url, headers) {
         }).on('error', _err => reject);
     });
 }
-export async function file(url, headers) {
+export async function file(url, name, headers) {
     return await new Promise((resolve, reject) => {
         get(url, { headers }, res => {
             if (res.headers['content-type']?.startsWith('text/html') === true) {
@@ -111,7 +111,7 @@ export async function file(url, headers) {
                     fileContent += chunk;
                 }).on('end', () => {
                     consume((async () => {
-                        await file(decode(substring(fileContent, 'http', '"')));
+                        await file(decode(substring(fileContent, 'http', '"')), getFileName(url));
                         resolve();
                     })());
                 }).on('error', _err => reject);
@@ -125,7 +125,7 @@ export async function file(url, headers) {
                 }).on('end', () => {
                     consume((async () => {
                         await emptyDirPromise;
-                        writeFile(`${options.outDirPath}${getFileName(url)}`, fileContent, err => {
+                        writeFile(`${options.outDirPath}${name ?? getFileName(url)}`, fileContent, err => {
                             if (err !== null)
                                 reject(err);
                             resolve();
@@ -140,7 +140,7 @@ export async function file(url, headers) {
                 }).on('end', () => {
                     consume((async () => {
                         await emptyDirPromise;
-                        writeFile(`${options.outDirPath}${getFileName(url)}`, fileContent.get(), err => {
+                        writeFile(`${options.outDirPath}${name ?? getFileName(url)}`, fileContent.get(), err => {
                             if (err !== null)
                                 reject(err);
                             resolve();
