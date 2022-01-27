@@ -1,5 +1,14 @@
 # packify
+[![Semantic Versioning 2.0.0](https://img.shields.io/badge/semver-2.0.0-standard.svg)](https://semver.org/)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![Linux](https://svgshare.com/i/Zhy.svg)](https://svgshare.com/i/Zhy.svg)
+[![Windows](https://svgshare.com/i/ZhY.svg)](https://svgshare.com/i/ZhY.svg)
+[![made-with-javascript](https://img.shields.io/badge/Made%20with-JavaScript-ffff00.svg)](https://www.javascript.com)
+[![made-with-typescript](https://img.shields.io/badge/Made%20with-TypeScript-0000e0.svg)](https://www.typescriptlang.org/)
+[![Npm package version](https://badgen.net/npm/v/@ii887522/packify)](https://www.npmjs.com/package/@ii887522/packify)
+[![Npm package daily downloads](https://badgen.net/npm/dm/@ii887522/packify)](https://npmjs.com/package/@ii887522/packify)
+[![Npm package license](https://badgen.net/npm/license/@ii887522/packify)](https://npmjs.com/package/@ii887522/packify)
+[![Npm package dependents](https://badgen.net/npm/dependents/@ii887522/packify)](https://npmjs.com/package/@ii887522/packify)
 
 It is a build tool to allow users to just simply specify their dependencies they need and it will automatically download, install and configure them properly.
 
