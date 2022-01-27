@@ -12,8 +12,14 @@ export const options = {
 let emptyDirPromise;
 function cleanDirs() {
     emptyDirPromise = emptyDir(options.outDirPath);
+    cleanX86DllOutDirPaths();
+    cleanX64DllOutDirPaths();
+}
+function cleanX86DllOutDirPaths() {
     for (const path of options.x86DllOutDirPaths)
         consume(removeFiles('dll', path));
+}
+function cleanX64DllOutDirPaths() {
     for (const path of options.x64DllOutDirPaths)
         consume(removeFiles('dll', path));
 }
@@ -51,14 +57,16 @@ export async function zip(url, headers) {
                         await emptyDirPromise;
                         jsZip.forEach((relativePath, file) => {
                             if (file.dir) {
-                                mkdirSync(`${options.outDirPath}${relativePath}`, { recursive: true });
+                                mkdirSync(`${options.outDirPath}/${relativePath}`, { recursive: true });
                                 --pendingEntryCount;
                             }
                             else {
                                 consume((async () => {
-                                    writeFile(`${options.outDirPath}${relativePath}`, await file.async('uint8array'), err => {
-                                        if (err !== null)
+                                    writeFile(`${options.outDirPath}/${relativePath}`, await file.async('uint8array'), err => {
+                                        if (err !== null) {
                                             reject(err);
+                                            return;
+                                        }
                                         if (--pendingEntryCount === 0)
                                             resolve();
                                     });
@@ -82,14 +90,16 @@ export async function zip(url, headers) {
                         await emptyDirPromise;
                         jsZip.forEach((relativePath, file) => {
                             if (file.dir) {
-                                mkdirSync(`${options.outDirPath}${relativePath}`, { recursive: true });
+                                mkdirSync(`${options.outDirPath}/${relativePath}`, { recursive: true });
                                 --pendingEntryCount;
                             }
                             else {
                                 consume((async () => {
-                                    writeFile(`${options.outDirPath}${relativePath}`, await file.async('uint8array'), err => {
-                                        if (err !== null)
+                                    writeFile(`${options.outDirPath}/${relativePath}`, await file.async('uint8array'), err => {
+                                        if (err !== null) {
                                             reject(err);
+                                            return;
+                                        }
                                         if (--pendingEntryCount === 0)
                                             resolve();
                                     });
@@ -111,7 +121,7 @@ export async function file(url, name, headers) {
                     fileContent += chunk;
                 }).on('end', () => {
                     consume((async () => {
-                        await file(decode(substring(fileContent, 'http', '"')), getFileName(url));
+                        await file(decode(substring(fileContent, 'http', '"')), name ?? getFileName(url));
                         resolve();
                     })());
                 }).on('error', _err => reject);
@@ -125,9 +135,11 @@ export async function file(url, name, headers) {
                 }).on('end', () => {
                     consume((async () => {
                         await emptyDirPromise;
-                        writeFile(`${options.outDirPath}${name ?? getFileName(url)}`, fileContent, err => {
-                            if (err !== null)
+                        writeFile(`${options.outDirPath}/${name ?? getFileName(url)}`, fileContent, err => {
+                            if (err !== null) {
                                 reject(err);
+                                return;
+                            }
                             resolve();
                         });
                     })());
@@ -140,9 +152,11 @@ export async function file(url, name, headers) {
                 }).on('end', () => {
                     consume((async () => {
                         await emptyDirPromise;
-                        writeFile(`${options.outDirPath}${name ?? getFileName(url)}`, fileContent.get(), err => {
-                            if (err !== null)
+                        writeFile(`${options.outDirPath}/${name ?? getFileName(url)}`, fileContent.get(), err => {
+                            if (err !== null) {
                                 reject(err);
+                                return;
+                            }
                             resolve();
                         });
                     })());
@@ -152,17 +166,16 @@ export async function file(url, name, headers) {
     });
 }
 export function dll(platform, path) {
-    let dllOutDirPaths;
-    switch (platform) {
-        case 'x86':
-            dllOutDirPaths = options.x86DllOutDirPaths;
-            break;
-        case 'x64': dllOutDirPaths = options.x64DllOutDirPaths;
-    }
-    for (const dllOutDirPath of dllOutDirPaths) {
-        copyFile(`${options.outDirPath}${path}`, `${dllOutDirPath}${getFileName(path)}`, err => {
+    for (const dllOutDirPath of getDllOutDirPaths(platform)) {
+        copyFile(`${options.outDirPath}/${path}`, `${dllOutDirPath}/${getFileName(path)}`, err => {
             if (err !== null)
                 throw err;
         });
+    }
+}
+function getDllOutDirPaths(platform) {
+    switch (platform) {
+        case 'x86': return options.x86DllOutDirPaths;
+        case 'x64': return options.x64DllOutDirPaths;
     }
 }

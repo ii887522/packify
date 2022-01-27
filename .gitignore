@@ -1,6 +1,3 @@
 node_modules
-libs
-*.tsbuildinfo
-test/**/Debug/**/*.dll
-test/**/Release/**/*.dll
-test/**/Test/**/*.dll
+test/lib
+test/**/*.dll
