@@ -1,10 +1,13 @@
 {
   "name": "@ii887522/packify",
-  "version": "1.5.7",
+  "version": "1.6.0",
   "description": "It is a build tool to allow users to just simply specify their dependencies they need and it will automatically download, install and configure them properly.",
   "main": "index.js",
   "scripts": {
-    "test": "ts-standard && node test/build.js"
+    "lint": "ts-standard",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "test": "node test/build.js"
   },
   "type": "module",
   "repository": {
@@ -23,18 +26,15 @@
   },
   "homepage": "https://github.com/ii887522/packify",
   "ts-standard": {
-    "ignore": [
-      "test/index.test.js",
-      "index.js"
-    ]
+    "ignore": ["test/**/*.js", "*.js"]
   },
   "devDependencies": {
-    "@types/node": "^15.12.2",
-    "ts-standard": "^10.0.0"
+    "@types/node": "^17.0.12",
+    "ts-standard": "^11.0.0"
   },
   "dependencies": {
-    "@ii887522/hydro": "^1.3.0",
+    "@ii887522/hydro": "^2.0.1",
     "html-entities": "^2.3.2",
-    "jszip": "^3.6.0"
+    "jszip": "^3.7.1"
   }
 }

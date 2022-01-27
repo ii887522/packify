@@ -9,37 +9,41 @@ import { decode } from 'html-entities'
 
 export const options = {
   /**
-   * It must be assigned to a valid directory path and ends with /
+   * It must be assigned to a valid directory path but must not ends with /
    */
   outDirPath: '',
 
   /**
-   * It must be assigned to an array of valid directory paths and all ends with / if specifying some x86 dll dependencies
+   * It must be assigned to an array of valid directory paths but all paths must not end with /
    */
   x86DllOutDirPaths: [''],
 
   /**
-   * It must be assigned to an array of valid directory paths and all ends with / if specifying some x64 dll dependencies
+   * It must be assigned to an array of valid directory paths but all paths must not end with /
    */
   x64DllOutDirPaths: ['']
 }
 
 let emptyDirPromise: Promise<void>
 
-/**
- * It must only be called 1 time in dependencies function
- */
 function cleanDirs (): void {
   emptyDirPromise = emptyDir(options.outDirPath)
+  cleanX86DllOutDirPaths()
+  cleanX64DllOutDirPaths()
+}
+
+function cleanX86DllOutDirPaths (): void {
   for (const path of options.x86DllOutDirPaths) consume(removeFiles('dll', path))
+}
+
+function cleanX64DllOutDirPaths (): void {
   for (const path of options.x64DllOutDirPaths) consume(removeFiles('dll', path))
 }
 
 /**
- * Dependencies inside a code block is passed as an argument to this function to ensure proper setup is happened.
+ * This function will help you to automatically download and install dependencies specified in the `run` function received from its parameter.
  *
- * It must only be called 1 time in build script.
- * @param run it must only contain function calls with file extension function name and promise related functions
+ * @param run It must only contains calls to functions such as `zip`, `file` and promise related functions.
  */
 export function dependencies (run: () => void): void {
   cleanDirs()
@@ -47,8 +51,11 @@ export function dependencies (run: () => void): void {
 }
 
 /**
- * zip is a file extension name. It must only be called in a function that is passed to dependencies function.
- * @param url it must starts with https://
+ * `zip` is a file extension name. It is called to specify the dependency on a `zip` file stored in the internet. It must only be called in a function that is passed to the
+ * `dependencies` function.
+ *
+ * @param url The uniform resource locator that refers to a `zip` file stored in the internet. It must starts with https://
+ * @param headers The HTTP headers used to retrieve the `zip` file stored in the internet specified by the `url` if any.
  */
 export async function zip (url: string, headers?: OutgoingHttpHeaders): Promise<void> {
   return await new Promise((resolve, reject) => {
@@ -79,12 +86,15 @@ export async function zip (url: string, headers?: OutgoingHttpHeaders): Promise<
             await emptyDirPromise
             jsZip.forEach((relativePath, file) => {
               if (file.dir) {
-                mkdirSync(`${options.outDirPath}${relativePath}`, { recursive: true })
+                mkdirSync(`${options.outDirPath}/${relativePath}`, { recursive: true })
                 --pendingEntryCount
               } else {
                 consume((async () => {
-                  writeFile(`${options.outDirPath}${relativePath}`, await file.async('uint8array'), err => {
-                    if (err !== null) reject(err)
+                  writeFile(`${options.outDirPath}/${relativePath}`, await file.async('uint8array'), err => {
+                    if (err !== null) {
+                      reject(err)
+                      return
+                    }
                     if (--pendingEntryCount === 0) resolve()
                   })
                 })())
@@ -106,12 +116,15 @@ export async function zip (url: string, headers?: OutgoingHttpHeaders): Promise<
             await emptyDirPromise
             jsZip.forEach((relativePath, file) => {
               if (file.dir) {
-                mkdirSync(`${options.outDirPath}${relativePath}`, { recursive: true })
+                mkdirSync(`${options.outDirPath}/${relativePath}`, { recursive: true })
                 --pendingEntryCount
               } else {
                 consume((async () => {
-                  writeFile(`${options.outDirPath}${relativePath}`, await file.async('uint8array'), err => {
-                    if (err !== null) reject(err)
+                  writeFile(`${options.outDirPath}/${relativePath}`, await file.async('uint8array'), err => {
+                    if (err !== null) {
+                      reject(err)
+                      return
+                    }
                     if (--pendingEntryCount === 0) resolve()
                   })
                 })())
@@ -125,8 +138,12 @@ export async function zip (url: string, headers?: OutgoingHttpHeaders): Promise<
 }
 
 /**
- * file is just a single file. It must only be called in a function that is passed to dependencies function.
- * @param url it must starts with https://
+ * `file` is just a single file. It is called to specify the dependency on a `file` stored in the internet. It must only be called in a function that is passed to the
+ * `dependencies` function.
+ *
+ * @param url The uniform resource locator that refers to a `file` stored in the internet. It must starts with https://
+ * @param name The file name used to store the `file` in the output directory.
+ * @param headers The HTTP headers used to retrieve the `zip` file stored in the internet specified by the `url` if any.
  */
 export async function file (url: string, name?: string, headers?: OutgoingHttpHeaders): Promise<void> {
   return await new Promise((resolve, reject) => {
@@ -137,7 +154,7 @@ export async function file (url: string, name?: string, headers?: OutgoingHttpHe
           fileContent += chunk as string
         }).on('end', () => {
           consume((async () => {
-            await file(decode(substring(fileContent, 'http', '"')), getFileName(url))
+            await file(decode(substring(fileContent, 'http', '"')), name ?? getFileName(url))
             resolve()
           })())
         }).on('error', _err => reject)
@@ -150,8 +167,11 @@ export async function file (url: string, name?: string, headers?: OutgoingHttpHe
         }).on('end', () => {
           consume((async () => {
             await emptyDirPromise
-            writeFile(`${options.outDirPath}${name ?? getFileName(url)}`, fileContent, err => {
-              if (err !== null) reject(err)
+            writeFile(`${options.outDirPath}/${name ?? getFileName(url)}`, fileContent, err => {
+              if (err !== null) {
+                reject(err)
+                return
+              }
               resolve()
             })
           })())
@@ -163,8 +183,11 @@ export async function file (url: string, name?: string, headers?: OutgoingHttpHe
         }).on('end', () => {
           consume((async () => {
             await emptyDirPromise
-            writeFile(`${options.outDirPath}${name ?? getFileName(url)}`, fileContent.get(), err => {
-              if (err !== null) reject(err)
+            writeFile(`${options.outDirPath}/${name ?? getFileName(url)}`, fileContent.get(), err => {
+              if (err !== null) {
+                reject(err)
+                return
+              }
               resolve()
             })
           })())
@@ -175,18 +198,23 @@ export async function file (url: string, name?: string, headers?: OutgoingHttpHe
 }
 
 /**
- * dll is a file extension name. It must only be called in a function that is passed to dependencies function.
+ * `dll` is a file extension name. It is called to copy the dependency specified by the `path` from its parameter to the `dll` output directory specified in the `options`.
+ * It must only be called in a function that is passed to the `dependencies` function.
+ *
+ * @param platform The platform which the `dll` file is going to run on.
+ * @param path The file path which is relative to the output directory path specified in the `options` where its file is going to be copied.
  */
 export function dll (platform: 'x86' | 'x64', path: string): void {
-  let dllOutDirPaths: string[]
-  switch (platform) {
-    case 'x86': dllOutDirPaths = options.x86DllOutDirPaths
-      break
-    case 'x64': dllOutDirPaths = options.x64DllOutDirPaths
-  }
-  for (const dllOutDirPath of dllOutDirPaths) {
-    copyFile(`${options.outDirPath}${path}`, `${dllOutDirPath}${getFileName(path)}`, err => {
+  for (const dllOutDirPath of getDllOutDirPaths(platform)) {
+    copyFile(`${options.outDirPath}/${path}`, `${dllOutDirPath}/${getFileName(path)}`, err => {
       if (err !== null) throw err
     })
+  }
+}
+
+function getDllOutDirPaths (platform: 'x86' | 'x64'): string[] {
+  switch (platform) {
+    case 'x86': return options.x86DllOutDirPaths
+    case 'x64': return options.x64DllOutDirPaths
   }
 }
