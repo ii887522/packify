@@ -13,48 +13,13 @@
 It is a build tool to allow users to just simply specify their dependencies they need and it will automatically download, install and configure them properly.
 
 ## Table of contents
+- [Example usage](https://github.com/ii887522/packify#example-usage)
 - [Coding style](https://github.com/ii887522/packify#coding-style)
 - [Prerequisites](https://github.com/ii887522/packify#prerequisites)
 - [Install dependencies](https://github.com/ii887522/packify#install-dependencies)
 - [Lint the project](https://github.com/ii887522/packify#lint-the-project)
 - [Build the project](https://github.com/ii887522/packify#build-the-project)
 - [Test the project](https://github.com/ii887522/packify#test-the-project)
-- [Example usage](https://github.com/ii887522/packify#example-usage)
-
-## Coding style
-This project follows [Javascript Standard Style](https://standardjs.com/). Please familiarize yourself with the rules provided in the coding style and
-make sure all the proposed code changes in your commits are conforming to the style before making a merge request. You can also make use of
-StandardJS - Javascript Standard Style which is a [Visual Studio Code](https://code.visualstudio.com/) plugin and `npm run lint` command under the
-[Lint the project](https://github.com/ii887522/packify#lint-the-project) section to support you.
-
-## Prerequisites
-- Windows 11 or Linux
-- [Visual Studio Code](https://code.visualstudio.com/) with plugins:
-  - EditorConfig for VS Code
-  - Markdown All in One
-  - StandardJS - Javascript Standard Style
-  - YAML
-- [Node.js 16.3.2](https://nodejs.org/en/) and later
-
-## Install dependencies
-```sh
-npm install
-```
-
-### Lint the project
-```sh
-npm run lint
-```
-
-### Build the project
-```sh
-npm run build
-```
-
-### Test the project
-```sh
-npm test
-```
 
 ## Example usage
 ```js
@@ -95,4 +60,39 @@ dependencies(async () => {
   dll('x86', `SDL2_ttf-${sdl2TTFVersion}/lib/x86/SDL2_ttf.dll`)
   dll('x64', `SDL2_ttf-${sdl2TTFVersion}/lib/x64/SDL2_ttf.dll`)
 })
+```
+
+## Coding style
+This project follows [Javascript Standard Style](https://standardjs.com/). Please familiarize yourself with the rules provided in the coding style and
+make sure all the proposed code changes in your commits are conforming to the style before making a merge request. You can also make use of
+StandardJS - Javascript Standard Style which is a [Visual Studio Code](https://code.visualstudio.com/) plugin and `npm run lint` command under the
+[Lint the project](https://github.com/ii887522/packify#lint-the-project) section to support you.
+
+## Prerequisites
+- Windows 11 or Linux
+- [Visual Studio Code](https://code.visualstudio.com/) with plugins:
+  - EditorConfig for VS Code
+  - Markdown All in One
+  - StandardJS - Javascript Standard Style
+  - YAML
+- [Node.js 16.3.2](https://nodejs.org/en/) and later
+
+## Install dependencies
+```sh
+npm install
+```
+
+### Lint the project
+```sh
+npm run lint
+```
+
+### Build the project
+```sh
+npm run build
+```
+
+### Test the project
+```sh
+npm test
 ```

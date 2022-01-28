@@ -202,7 +202,8 @@ export async function file (url: string, name?: string, headers?: OutgoingHttpHe
  * It must only be called in a function that is passed to the `dependencies` function.
  *
  * @param platform The platform which the `dll` file is going to run on.
- * @param path The file path which is relative to the output directory path specified in the `options` where its file is going to be copied.
+ * @param path The file path which is relative to the output directory path specified in the `options` where its file is going to be copied. The file refered by the path must
+ *   exists.
  */
 export function dll (platform: 'x86' | 'x64', path: string): void {
   for (const dllOutDirPath of getDllOutDirPaths(platform)) {
